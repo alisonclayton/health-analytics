@@ -1,28 +1,25 @@
-# Angular specific
-/dist/
-/out-tsc/
-/tmp/
-/coverage/
-/e2e/test-output/
-/.angular/
-.angular/
+# Arquivos de dados (evita subir CSVs pesados)
+*.csv
+*.tsv
+*.zip
+*.tar.gz
 
-# Node modules and dependency files
-/node_modules/
-/package-lock.json
-/yarn.lock
+# Configurações de ambiente e credenciais
+.env
+*.env
+*.pem
+config.json
 
-# Environment files
-/.env
+# Arquivos do DBeaver e IDEs
+.dbeaver/
+.vscode/
+.idea/
 
-# Angular CLI and build artefacts
-/.angular-cli.json
-/.ng/
+# Logs e arquivos temporários
+*.log
+*.tmp
+*.sqlite
 
-# TypeScript cache
-*.tsbuildinfo
-
-# Logs
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+# Sistema operacional
+.DS_Store
+Thumbs.db
