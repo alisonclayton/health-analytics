@@ -1,0 +1,349 @@
+// ==========================================
+// DBML - Arquitetura Completa Synthea V1.0 (17 Tabelas)
+// ==========================================
+
+Table patients {
+  id varchar [primary key, note: "ID único do paciente"]
+  birthdate date
+  deathdate date
+  ssn varchar
+  drivers varchar
+  passport varchar
+  prefix varchar
+  first varchar
+  last varchar
+  suffix varchar
+  maiden varchar
+  marital varchar
+  race varchar
+  ethnicity varchar
+  gender varchar
+  birthplace varchar
+  address varchar
+  city varchar
+  state varchar
+  county varchar
+  zip varchar
+  lat numeric
+  lon numeric
+  healthcare_expenses numeric
+  healthcare_coverage numeric
+}
+
+Table encounters {
+  id varchar [primary key, note: "ID do atendimento"]
+  start_date timestamp
+  stop_date timestamp
+  patient varchar
+  organization varchar
+  provider varchar
+  payer varchar
+  encounterclass varchar
+  code varchar
+  description varchar
+  base_encounter_cost numeric
+  total_claim_cost numeric
+  payer_coverage numeric
+  reasoncode varchar
+  reasondescription varchar
+}
+
+Table allergies {
+  start_date date
+  stop_date date
+  patient varchar
+  encounter varchar
+  code varchar
+  system varchar
+  description varchar
+  type varchar
+  category varchar
+  reaction1 varchar
+  description1 varchar
+  severity1 varchar
+  reaction2 varchar
+  description2 varchar
+  severity2 varchar
+  START varchar
+  stop varchar
+}
+
+Table careplans {
+  id varchar [primary key]
+  start_date date
+  stop_date date
+  patient varchar
+  encounter varchar
+  code varchar
+  description varchar
+  reasoncode varchar
+  reasondescription varchar
+}
+
+Table claims {
+  id varchar [primary key]
+  patientid varchar
+  providerid varchar
+  primarypatientinsuranceid varchar
+  secondarypatientinsuranceid varchar
+  departmentid varchar
+  patientdepartmentid varchar
+  diagnosis1 varchar
+  diagnosis2 varchar
+  diagnosis3 varchar
+  diagnosis4 varchar
+  diagnosis5 varchar
+  diagnosis6 varchar
+  diagnosis7 varchar
+  diagnosis8 varchar
+  referringproviderid varchar
+  appointmentid varchar
+  currentillnessdate timestamp
+  servicedate timestamp
+  supervisingproviderid varchar
+  status1 varchar
+  status2 varchar
+  statusp varchar
+  outstanding1 numeric
+  outstanding2 numeric
+  outstandingp numeric
+  lastbilleddate1 timestamp
+  lastbilleddate2 timestamp
+  lastbilleddatep timestamp
+  healthcareclaimtypeid1 varchar
+  healthcareclaimtypeid2 varchar
+}
+
+Table claims_transactions {
+  id varchar [primary key]
+  claimid varchar
+  chargeid varchar
+  patientid varchar
+  type varchar
+  amount numeric
+  method varchar
+  fromdate timestamp
+  todate timestamp
+  placeofservice varchar
+  procedurecode varchar
+  modifier1 varchar
+  modifier2 varchar
+  diagnosisref1 integer
+  diagnosisref2 integer
+  diagnosisref3 integer
+  diagnosisref4 integer
+  units integer
+  departmentid varchar
+  notes text
+  unitamount numeric
+  transferoutid varchar
+  transfertype varchar
+  payments numeric
+  adjustments numeric
+  transfers numeric
+  outstanding numeric
+  appointmentid varchar
+  linenote varchar
+  patientinsuranceid varchar
+  feescheduleid varchar
+  providerid varchar
+  supervisingproviderid varchar
+}
+
+Table conditions {
+  start_date date
+  stop_date date
+  patient varchar
+  encounter varchar
+  code varchar
+  description varchar
+}
+
+Table devices {
+  start_date date
+  stop_date date
+  patient varchar
+  encounter varchar
+  code varchar
+  description varchar
+  udi varchar
+}
+
+Table imaging_studies {
+  id varchar [primary key]
+  date timestamp
+  patient varchar
+  encounter varchar
+  series_uid varchar
+  bodysite_code varchar
+  bodysite_description varchar
+  modality_code varchar
+  modality_description varchar
+  instance_uid varchar
+  sop_code varchar
+  sop_description varchar
+  procedure_code varchar
+}
+
+Table immunizations {
+  start_date date
+  stop_date date
+  patient varchar
+  payer varchar
+  encounter varchar
+  code varchar
+  description varchar
+  base_cost numeric
+  payer_coverage numeric
+  dispenses integer
+  totalcost numeric
+  reasoncode varchar
+  reasondescription varchar
+  DATE timestamp
+}
+
+Table observations {
+  date timestamp
+  patient varchar
+  encounter varchar
+  category varchar
+  code varchar
+  description varchar
+  value varchar
+  units varchar
+  type varchar
+}
+
+Table organizations {
+  id varchar [primary key]
+  name varchar
+  address varchar
+  city varchar
+  state varchar
+  zip varchar
+  lat numeric
+  lon numeric
+  phone varchar
+  revenue numeric
+  utilization integer
+}
+
+Table payer_transitions {
+  patient varchar
+  memberid varchar
+  start_year timestamp
+  end_year timestamp
+  payer varchar
+  secondary_payer varchar
+  ownership varchar
+  ownername varchar
+}
+
+Table payers {
+  id varchar [primary key]
+  name varchar
+  address varchar
+  city varchar
+  state_headquartered varchar
+  zip varchar
+  phone varchar
+  amount_covered numeric
+  amount_uncovered numeric
+  revenue numeric
+  covered_encounters integer
+  uncovered_encounters integer
+  covered_medications integer
+  uncovered_medications integer
+  covered_procedures integer
+  uncovered_procedures integer
+  covered_immunizations integer
+  uncovered_immunizations integer
+  unique_customers integer
+  qols_avg numeric
+  member_months integer
+}
+
+Table procedures {
+  start_date date
+  stop_date date
+  patient varchar
+  encounter varchar
+  code varchar
+  description varchar
+  base_cost numeric
+  reasoncode varchar
+  reasondescription varchar
+}
+
+Table providers {
+  id varchar [primary key]
+  organization varchar
+  name varchar
+  gender varchar
+  speciality varchar
+  address varchar
+  city varchar
+  state varchar
+  zip varchar
+  lat numeric
+  lon numeric
+  utilization integer
+}
+
+Table supplies {
+  date date
+  patient varchar
+  encounter varchar
+  code varchar
+  description varchar
+  quantity integer
+}
+
+// ==========================================
+// RELACIONAMENTOS (Foreign Keys estruturadas)
+// ==========================================
+
+Ref: encounters.patient > patients.id
+Ref: encounters.organization > organizations.id
+Ref: encounters.provider > providers.id
+Ref: encounters.payer > payers.id
+
+Ref: allergies.patient > patients.id
+Ref: allergies.encounter > encounters.id
+
+Ref: careplans.patient > patients.id
+Ref: careplans.encounter > encounters.id
+
+Ref: claims.patientid > patients.id
+Ref: claims.providerid > providers.id
+
+Ref: claims_transactions.claimid > claims.id
+Ref: claims_transactions.patientid > patients.id
+Ref: claims_transactions.providerid > providers.id
+
+Ref: conditions.patient > patients.id
+Ref: conditions.encounter > encounters.id
+
+Ref: devices.patient > patients.id
+Ref: devices.encounter > encounters.id
+
+Ref: imaging_studies.patient > patients.id
+Ref: imaging_studies.encounter > encounters.id
+
+Ref: immunizations.patient > patients.id
+Ref: immunizations.encounter > encounters.id
+Ref: immunizations.payer > payers.id
+
+Ref: observations.patient > patients.id
+Ref: observations.encounter > encounters.id
+
+Ref: payer_transitions.patient > patients.id
+Ref: payer_transitions.payer > payers.id
+
+Ref: procedures.patient > patients.id
+Ref: procedures.encounter > encounters.id
+
+Ref: supplies.patient > patients.id
+Ref: supplies.encounter > encounters.id
+
+Ref: providers.organization > organizations.id
