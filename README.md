@@ -35,3 +35,28 @@ You can explore and interact with the complete data architecture diagram online 
 1. Clone the repository to your local machine.
 2. Use the DBML Visualizer extension in VS Code to inspect the relational model in the /dbml folder.
 3. Run the SQL scripts locally or in your preferred environment to generate the processed tables that will feed the LLM pipeline.
+
+## 📈 KPIs Engineering
+
+This section documents the project's KPI (Key Performance Indicator) Engineering process. Here, complex business rules and hospital auditing challenges are translated into measurable indicators. 
+
+Each KPI listed below stems from a specific business question (elicited requirement) that, after modeling and executing the SQL query, consolidates into actionable data. These indicators are fundamental to feeding the LLM training pipeline, teaching the AI to identify bottlenecks, frauds, and operational inefficiencies.
+
+---
+
+### KPI 1: Pre-Discharge Clinical Record Lag Index
+This indicator measures the compliance and timeliness of clinical records shortly before patient release, a critical factor for the approval of hospital bills by health insurance companies.
+
+* **Elicited Requirement (The Business Question):** 
+  *"Considering the simulation base date (closed history), identify all inpatient encounters that have attached financial transactions and are linked to valid insurance payers (excluding 'SUS' and 'Particular'). The rule requires evaluating the recording interval: bring only the cases where the patient went more than 1 day (24 hours) without any clinical observation record before their actual discharge date, evidencing a gap in the medical record keeping."*
+
+* **Strategic Objective of the KPI:** 
+  Monitor the risk of claim denials (payment rejections). The absence of clinical evolutions or observations in the 24 hours preceding discharge suggests a "pending administrative discharge" or a failure in medical record keeping, giving the insurance company a loophole to contest the necessity of that last billed day of hospitalization.
+
+* **Calculation Logic (SQL Trigger):** 
+  Relative interval extraction where the difference between the end of the hospitalization and the last clinical event is greater than 1 day (`EXTRACT(DAY FROM (stop_date - MAX(observations.date))) > 1`).
+
+* **Analyzed Tables:** `encounters`, `payers`, `claims`, `claims_transactions`, `observations`.
+
+---
+*(New KPIs will be added to this section as the analytical mapping evolves)*
