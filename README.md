@@ -59,4 +59,20 @@ This indicator measures the compliance and timeliness of clinical records shortl
 * **Analyzed Tables:** `encounters`, `payers`, `claims`, `claims_transactions`, `observations`.
 
 ---
+
+### KPI 2: Billing Inflation vs. Coverage Deficit Index
+This indicator tracks instances of potential overbilling combined with inadequate insurance coverage, focusing specifically on patients with a history of changing health insurance providers.
+
+* **Elicited Requirement (The Business Question):** 
+  *"Taking the system's consolidated base as a reference, list the inpatient encounters (`encounters`) of all patients who have transitioned health insurance providers at least once in their lifetime (`payer_transitions`). The objective is to detect billing inflation: filter the cases where the total billed cost (`total_claim_cost`) exceeded the base tabulated cost of the encounter (`base_encounter_cost`) by **more than 10%**, and ensure to return only the records where the current plan's coverage (`payer_coverage`) was insufficient to fully cover the final billed cost."*
+
+* **Strategic Objective of the KPI:** 
+  Detect anomalous pricing behaviors, such as "upcoding" (charging for a more expensive service than performed) or unjustified price markups. By analyzing patients who change payers, this KPI uncovers vulnerabilities during insurance transitions and highlights the financial risk of unpaid balances. For the LLM, it serves as a core lesson in cross-referencing baseline clinical costs against actual financial claims and insurance limits.
+
+* **Calculation Logic (SQL Trigger):** 
+  Identification of a markup greater than 10% (`total_claim_cost > (base_encounter_cost * 1.10)`) occurring simultaneously with a coverage shortfall (`COALESCE(payer_coverage, 0) < total_claim_cost`), utilizing a CTE (Common Table Expression) to pre-filter patients with a history in the `payer_transitions` table.
+
+* **Analyzed Tables:** `encounters`, `payer_transitions`.
+---
+
 *(New KPIs will be added to this section as the analytical mapping evolves)*
